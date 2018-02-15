@@ -69,7 +69,12 @@ class FileController extends Controller
                 $rezult[] = $files;
                 return $rezult;
             } else return 101;
-        } else return 100;
+        } else {
+            $ext = pathinfo($dir, PATHINFO_EXTENSION);
+            if ( $ext == 'txt' ){
+                return 'txt';
+            } else return 100;
+        }
     }
 
     private function open($dir){
@@ -77,7 +82,7 @@ class FileController extends Controller
         $rezult = $this->openDir($dir);
         $rez .= '<label>Текущий путь:&nbsp;&nbsp;&nbsp;'.$dir.'</label>';
 
-        if (!empty($rezult) and $rezult != 100 and $rezult != 101){
+        if (!empty($rezult) and $rezult != 100 and $rezult != 101 and $rezult != 'txt'){
             $dirs = $rezult[0];
             $files = $rezult[1];
             $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' . $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
@@ -93,10 +98,17 @@ class FileController extends Controller
                     $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $files[$key] . '"/>&nbsp;<label>' . $a . '</label></p></div><div class="elem-size">' . $this->filesize_format(filesize($files[$key])) . '</div><div class="elem-info">Файл</div></div>';
                 }
             }
-        } else if($rezult === 100) {
+        } else if ( $rezult === 100 ) {
             $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
             $rez .= "<br><br>Такие файлы я пока не умею открывать ='(";
-        } else {
+        } else if ( $rezult === 'txt' ){
+            $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
+            $fd = file_get_contents($dir);
+            $fd = iconv('windows-1251', 'utf-8', $fd);
+            $fd = nl2br($fd);
+            $rez .= "<br><br><p>" . $fd . "</p>";
+        }
+        else {
             $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
             $rez .= '<br><br>Не могу открыть директорию';
         }
