@@ -1,4 +1,10 @@
 <div class="container">
+    <div class="btn">
+        <button class="move" disabled>Переименовать</button>
+        <button class="copy" disabled>Копировать</button>
+        <button class="remove" disabled>Удалить</button>
+    </div>
+
     <div class="starter-template">
         <h1>Файловый менеджер</h1><br>
         <div class="fl">

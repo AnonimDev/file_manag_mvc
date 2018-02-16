@@ -1,7 +1,12 @@
 /*css*/
-
-.starter-template{
+.container{
     height: 100vh;
+}
+.btn{
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.starter-template{
     text-align: center;
     display: flex;
     flex-direction: column;

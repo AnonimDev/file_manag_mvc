@@ -2,12 +2,23 @@ $(document).ready( function () {
 
     document.oncontextmenu = function() {return false;};
     var anim = true;
+    var dir;
     ajaxOpenDir();
 
 
     $('.box').on('click', 'input', function(){
-        var dir = $(this).val();
-        ajaxOpenDir(dir);
+        dir = $(this).val();
+        //ajaxOpenDir(dir);
+        countChecked(this);
+        var check = ($(this).prop("checked"));
+           // $('.copy, .move, .remove').prop('disabled',false);
+        //} else $('.copy, .move, .remove').prop('disabled',true);
+        $('.copy, .move, .remove').prop('disabled',!check);
+    });
+    
+    $('.copy, .move, .remove').on('click', function(){
+        console.log(dir);
+        //dir = '';
     });
 
     $('.box').on('click', 'label', function(){
@@ -64,6 +75,16 @@ $(document).ready( function () {
                 .show('fast'); // Показываем меню с небольшим стандартным эффектом jQuery. Как раз очень хорошо подходит для меню
         }
     });
+    function countChecked(a) {
+        //$("input:checkbox").removeAttr("checked");
+        var n = $("input:checked").length;
+        if (n == 2){
+            $('input:checkbox').prop('checked', $(this).is(':checked'));
+            $(a).prop('checked', true)
+        }
+        //console.log(n + (n <= 1 ? " is" : " are") + " checked!");
+    }
+
 
     function ajaxOpenDir(dir) {
         //dir = dir || '';
