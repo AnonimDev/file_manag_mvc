@@ -77,42 +77,61 @@ class FileController extends Controller
         }
     }
 
-    private function open($dir){
-        $rez = '';
-        $rezult = $this->openDir($dir);
-        $rez .= '<label>Текущий путь:&nbsp;&nbsp;&nbsp;'.$dir.'</label>';
+    private function forMass($arr, $type){
+        $arr2 = [];
+        $size = 0;
+        foreach ($arr as $key => $value) {
+            $label = mb_strtolower(mb_substr(mb_strrchr($arr[$key], DIRECTORY_SEPARATOR), 1));
+            if ($type == 'Файл'){
+                $size = $this->filesize_format(filesize($arr[$key]));
+            }
+            $arr2[$arr[$key]] = [
+                'label' => $label,
+                'size' => $size,
+                'type' => $type
+            ];
+        }
+        return $arr2;
+    }
 
-        if (!empty($rezult) and $rezult != 100 and $rezult != 101 and $rezult != 'txt'){
-            $dirs = $rezult[0];
-            $files = $rezult[1];
-            $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' . $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
-            if (!empty($dirs)) {
-                foreach ($dirs as $key => $value) {
-                    $a = mb_strtolower(mb_substr(mb_strrchr($dirs[$key], DIRECTORY_SEPARATOR), 1));
-                    $rez .= '<div class="box-elem"><div class="elem"><b><p><input id="checkbox" type="checkbox" value="' . $dirs[$key] . '"/>&nbsp;<label>' . $a . '</label></p></b></div><div class="elem-size"></div><div class="elem-info">Папка</div></div>';
-                }
-            }
-            if (!empty($files)) {
-                foreach ($files as $key => $value) {
-                    $a = mb_strtolower(mb_substr(mb_strrchr($files[$key], DIRECTORY_SEPARATOR), 1));
-                    $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $files[$key] . '"/>&nbsp;<label>' . $a . '</label></p></div><div class="elem-size">' . $this->filesize_format(filesize($files[$key])) . '</div><div class="elem-info">Файл</div></div>';
-                }
-            }
-        } else if ( $rezult === 100 ) {
-            $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
-            $rez .= "<br><br>Такие файлы я пока не умею открывать ='(";
-        } else if ( $rezult === 'txt' ){
-            $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
+    private function open($dir){
+        $rezult = $this->openDir($dir);
+
+        if (!empty($rezult)){
+            $array = [
+                'status' => '',
+                'dir' => $dir,
+                'prev' => $this->not_repeat($dir),
+                'files' => '',
+                'dirs' => '',
+                'text' => '',
+                'separator' => DIRECTORY_SEPARATOR
+            ];
+        }
+
+        if (is_array($rezult)) {
+            $array['status'] = 200;
+            $array['files'] = $this->forMass($rezult[1], 'Файл');
+            $array['dirs'] = $this->forMass($rezult[0], 'Папка');
+            //$rez = json_encode($array);
+        }
+        if ($rezult === 'txt'){
             $fd = file_get_contents($dir);
             $fd = iconv('windows-1251', 'utf-8', $fd);
             $fd = nl2br($fd);
-            $rez .= "<br><br><p>" . $fd . "</p>";
+            $array['status'] = 300;
+            $array['text'] = $fd;
         }
-        else {
-            $rez .= '<div class="box-elem"><div class="elem"><p><input id="checkbox" type="checkbox" value="' .  $this->not_repeat($dir) . '"/>&nbsp;<label>/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p></div><div class="elem-size"></div><div class="elem-info"></div></div>';
-            $rez .= '<br><br>Не могу открыть директорию';
+        if ($rezult === 100){
+            $array['status'] = 400;
+            $array['text'] = 'Такие файлы я пока не умею открывать';
+        }
+        if ($rezult === 101){
+            $array['status'] = 400;
+            $array['text'] = 'Не могу открыть директорию';
         }
 
-        return $rez;
+        return json_encode($array);
     }
+
 }

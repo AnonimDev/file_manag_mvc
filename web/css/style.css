@@ -22,6 +22,7 @@
     /*overflow: hidden;*/
 }
 .elem, .elem-info, .elem-size{
+    white-space: nowrap;
     display: block;
     overflow: hidden;
     position: relative; float: left;

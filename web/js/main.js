@@ -28,10 +28,14 @@ $(document).ready( function () {
     $(document).on('change', '.sel', function () {
         fontSizeAnim(anim);
     });
+
+
     $(document).on('change', '.anim', function () {
         var animElem = $('.anim').val();
         anim = (animElem == 0) ? false : true;
     });
+
+
     $('.box').on('mousedown', 'label', function( event ){
         $('*').removeClass('selected-html-element');
         // Удаляем предыдущие вызванное контекстное меню:
@@ -62,25 +66,99 @@ $(document).ready( function () {
     });
 
     function ajaxOpenDir(dir) {
-        if (dir == undefined){
-            var dir = '';
-        }
+        //dir = dir || '';
+        dir = (!dir) ? '' : dir;
         $.ajax({
-            //async: false,
             type: "POST",
             url: 'ajax',
-            data: {
-                dir: dir
-            },
+            data: { dir: dir },
             success: function(data) {
-                $('.box').html(data);
-                fontSizeAnim(0);
-                if (anim == 0) {
-                    $('.box-elem').show();
-                } else $('.box-elem').slideDown(800);
+                parseJSN(data);
             }
         });
     }
+
+    function parseJSN(answer) {
+        var answerPars = jQuery.parseJSON(answer);
+        parseAnswerText(answerPars);
+        $('.box').html(parseAnswerFiles(answerPars));
+        fontSizeAnim(0);
+        (!anim) ? $('.box-elem').show() : $('.box-elem').slideDown(800);
+    }
+
+    function addElem(label, checkbox, size, info) {
+        checkbox = checkbox || '';
+        size = size || '';
+        info = info || '';
+
+        return '<div class="box-elem">' +
+                '<div class="elem">' +
+                    '<p>' +
+                        '<input id="checkbox" type="checkbox" value="' + checkbox + '"/>&nbsp;' +
+                        '<label>' + label + '</label>' +
+                    '</p>' +
+                '</div>' +
+                '<div class="elem-size">' + size + '</div>' +
+                '<div class="elem-info">' + info + '</div>' +
+            '</div>';
+
+    }
+    function parseAnswerText(answer) {
+        $('.text').remove();
+        if (answer.status == 300) {
+            $('<textarea/>').addClass('text').css({
+                "background-color": '#fff',
+                position: 'absolute',
+                width: '60%',
+                overflow: 'scroll',
+                height: '50%',
+                left: '20%',
+                top: '30%'
+            })
+                .appendTo('body')
+                .append( answer.text );
+        }
+    }
+
+    function parseAnswerFiles(answer) {
+        var rez = '';
+
+        if (typeof answer !== 'undefined') {
+            rez += '<label>Текущий путь:&nbsp;&nbsp;&nbsp;' + answer.dir + '</label>';
+            rez += addElem('/',answer.prev,'','');
+
+            if (answer.status == 200) {
+                if (typeof answer.dirs !== 'undefined'){
+                    $.each(answer.dirs,function(key,value){
+                        rez += addElem(
+                            answer.dirs[key].label,
+                            key,
+                            '',
+                            'Папка'
+                        );
+                    });
+                }
+                if (typeof answer.files !== 'undefined'){
+                    $.each(answer.files,function(key,value){
+                        rez += addElem(
+                            answer.files[key].label,
+                            key,
+                            answer.files[key].size,
+                            'Файл'
+                        );
+                    });
+                }
+            }
+            // if (answer.status == 300) {
+            //     rez += answer.text;
+            // }
+            if (answer.status == 400) {
+                rez += answer.text;
+            }
+        }
+        return rez;
+    }
+
     function fontSizeAnim(animat) {
         var sel = $('.sel').val();
         if (animat == 1) {
