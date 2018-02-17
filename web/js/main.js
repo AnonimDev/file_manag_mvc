@@ -15,11 +15,29 @@ $(document).ready( function () {
         //} else $('.copy, .move, .remove').prop('disabled',true);
         $('.copy, .move, .remove').prop('disabled',!check);
     });
-    
-    $('.copy, .move, .remove').on('click', function(){
+
+    $('.copy').on('click', function(){
+        console.log(' Вот оно копирование');
         console.log(dir);
         //dir = '';
     });
+    $('.move').on('click', function(){
+        console.log(' Вот оно переименование');
+        console.log(dir);
+        //dir = '';
+    });
+    $('.remove').on('click', function(){
+        console.log(' Вот оно удаление');
+        if(confirm('Вы уверены?')){
+            Copy()
+        }
+        console.log(dir);
+        //dir = '';
+    });
+    function Copy() {
+        
+    }
+
 
     $('.box').on('click', 'label', function(){
         var dir = $(this).prev();
@@ -89,6 +107,7 @@ $(document).ready( function () {
     function ajaxOpenDir(dir) {
         //dir = dir || '';
         dir = (!dir) ? '' : dir;
+        
         $.ajax({
             type: "POST",
             url: 'ajax',
