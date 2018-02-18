@@ -1,11 +1,24 @@
 /*css*/
+body {
+    background-color: #000!important;
+}
 .container{
     height: 100vh;
 }
 .starter-template{
     text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border: 1px solid #fff;
     padding-top: 30px;
-    padding-bottom: 30px;
+    color: #fff;
+    font-weight: 300;
+}
+.starter-template h1 {
+    font-weight: 300;
+    line-height: 34px;
+    font-size: 34px;
+    margin-bottom: 0;
 }
 .box{
     padding: 30px;
@@ -110,6 +123,9 @@ select{
     margin: 0 !important;
     border-top: 1px solid #fff!important;
     border-radius: 0!important;
+}
+.btn:hover {
+    cursor: default!important;
 }
 .btn button:focus {
     outline: none;
