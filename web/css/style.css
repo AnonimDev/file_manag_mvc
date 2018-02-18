@@ -111,6 +111,9 @@ select{
     border-top: 1px solid #fff!important;
     border-radius: 0!important;
 }
+.btn button:focus {
+    outline: none;
+}
 .btn button {
     text-decoration: none;
     outline: none;
