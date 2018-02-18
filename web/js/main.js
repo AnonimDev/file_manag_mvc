@@ -107,7 +107,7 @@ $(document).ready( function () {
     function ajaxOpenDir(dir) {
         //dir = dir || '';
         dir = (!dir) ? '' : dir;
-        
+
         $.ajax({
             type: "POST",
             url: 'ajax',
