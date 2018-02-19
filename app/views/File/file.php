@@ -28,9 +28,12 @@
         </div>
 
         <div class="btn">
+            <button class="doload" disabled>Скачать</button>
             <button class="move" disabled>Переименовать</button>
             <button class="copy" disabled>Копировать</button>
             <button class="remove" disabled>Удалить</button>
+            <button class="newfolder">Новая папка</button>
+            <button class="zipARX">Архив</button>
         </div>
 
     </div>

@@ -29,18 +29,21 @@ body {
     font-size: 20px;
 }
 .elem{
-    width: 50% !important;
+    text-align: left !important;
+    width: 30% !important;
+    margin-right: 10px;
     /*overflow: hidden;*/
 }
 .elem label {
     cursor: pointer;
 }
-.elem, .elem-info, .elem-size{
+.elem, .elem-info, .elem-size, .elem-perssion, .elem-date{
+    text-align: center;
     white-space: nowrap;
     display: block;
     overflow: hidden;
     position: relative; float: left;
-    width: 24%;
+    width: 17%;
     height: 30px;
 }
 .elem-info, .elem-size{
@@ -50,6 +53,11 @@ body {
     display: none;
     text-align: left;
     width: 100%;
+}
+a.disabled {
+    pointer-events: none; /* делаем ссылку некликабельной */
+    cursor: default;  /* устанавливаем курсор в виде стрелки */
+    color: #999; /* цвет текста для нективной ссылки */
 }
 
 /* Класс контекстного меню: */
