@@ -7,11 +7,15 @@ class Router{
 
         $routing = [
             "/" => ['controller' => 'File', 'action' => 'index'],
-            "/ajax" => ['controller' => 'File', 'action' => 'ajax']
+            "/console" => ['controller' => 'Console', 'action' => 'index'],
+            "/ajax" => ['controller' => 'File', 'action' => 'ajax'],
+            "/ajaxConsole" => ['controller' => 'Console', 'action' => 'ajaxConsole']
         ];
         $assets = [
           "js" => [
-              '/js/main.js' => 'js/main.js'
+              '/js/jquery.cookie.js' => 'js/jquery.cookie.js',
+              '/js/main.js' => 'js/main.js',
+              '/js/console.js' => 'js/console.js'
           ],
           "css" => [
               '/css/style.css' => 'css/style.css'

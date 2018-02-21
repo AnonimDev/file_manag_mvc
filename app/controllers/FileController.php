@@ -32,7 +32,7 @@ class FileController extends Controller
             }
         } else if (isset($_GET['download'])){
             $file = $_GET['download'];
-            doloadFile($file);
+            $this->doloadFile($file);
         }
         else echo 'Ошибка при отправке данных!!!';
     }
@@ -60,11 +60,12 @@ class FileController extends Controller
             if (is_array($dir)){
                 $array['status'] = 200;
                 $array['dirs'] = $this->forMass($rezult[0], 'Папка', false);
-                $array['dir'] = '/';
+                $array['dir'] = '';
+                //$array['prev'] = $this->not_repeat($dir);
             } else {
+
                 $array['dir'] = $dir;
                 $array['prev'] = $this->not_repeat($dir);
-
 
                 if (is_array($rezult)) {
                     $array['status'] = 200;
@@ -163,7 +164,7 @@ class FileController extends Controller
         $k = 0;
         ini_set('display_errors', 'Off'); /* Делаем так, потому что при определени приводов, кардридеров и прочьего будут выкидоваться ошибки */
         while(count($char) > $i){ /* Проходимся по массиву */
-            $path = $char[$i] . ":/"; /* Определяем в строке путь */
+            $path = $char[$i] . ":"; /* Определяем в строке путь */
             if(is_dir($path)){ /* Проверяем есть ли такой каталог в системе */
                 $spaces = disk_total_space($char[$i] . ':') + disk_free_space($char[$i] . ':'); /*Считаем общее кол-во памяти на нем */
                 if($spaces > $sensitivity){ /* Проверяем на кол-во памяти, чтобы отбросить диски, кард риадеры... */
@@ -278,7 +279,8 @@ class FileController extends Controller
 
           return json_encode($this->array);
     }
-    private function doloadFile($dir){
+    private function doloadFile($file){
+
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename=' . basename($file));

@@ -9,9 +9,14 @@ class Controller {
         $pref = debug_backtrace()[0]['file'];
         $pref = explode(DIRECTORY_SEPARATOR, $pref);
         $pref = array_pop($pref);
-        $pref = substr($pref, 0, 4);
+        $pref = substr($pref, 0, -14);
         $pref = $pref . '/';
-        include (self::$view . 'layout/layout.php');
-        $content = include (self::$view . $pref . $cont . '.php');
+        $a = file_get_contents(self::$view . $pref . $cont . '.php');
+        $b = file_get_contents(self::$view . 'layout/layout.php');
+        $content = str_replace('<!--[CONTENT]-->', $a, $b);
+        $temp = tempnam(sys_get_temp_dir(), 'php');
+        file_put_contents($temp, $content);
+        include($temp);
+        unlink($temp);
     }
 }

@@ -3,9 +3,8 @@ $(document).ready( function () {
     document.oncontextmenu = function() {return false;};
     var anim = true;
     var dir;
-    //var action;
-    ajaxOpenDir();
 
+    ajaxOpenDir();
 
     $('.box').on('click', 'input', function(){
         dir = $(this).val();
@@ -121,7 +120,7 @@ $(document).ready( function () {
 
     function ajaxOpenDir(dir, action, name) {
         name = name || '';
-        dir = dir || '';
+        dir = dir || $.cookie('dir') || '';
         action = action || '';
         //dir = (!dir) ? '' : dir;
 
@@ -172,11 +171,13 @@ $(document).ready( function () {
     }
     function parseAnswerFiles(answer) {
         var rez = '';
-
-
         if (typeof answer !== 'undefined') {
             dir = answer.dir;
+            //console.log(dir);
+            (answer.prev == '') ? $.cookie('dir', '') : $.cookie('dir', dir);
+
             rez += '<label>Текущий путь:&nbsp;&nbsp;&nbsp;' + answer.dir + '</label>';
+            //rez += addElem('',answer.prev,'','');
             rez += addElem('/',answer.prev,'','');
 
             if (answer.status == 200) {
@@ -280,7 +281,6 @@ $(document).ready( function () {
        return ajaxOpenDir(dir, action, name)
 
     }
-
 //============Конец блкока работы с кнопками=========================
 
 
